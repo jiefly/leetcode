@@ -1,7 +1,6 @@
 package com.example.chason.letcode.medium;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
 import java.util.Stack;
 
 /**
@@ -12,23 +11,46 @@ import java.util.Stack;
 
 public class SimplifyPath {
     public static void main(String[] args) {
-
+        Scanner s = new Scanner(System.in);
+        while (s.hasNext()) {
+            System.out.println(new SimplifyPath().simplifyPath(s.next()));
+        }
     }
 
     public String simplifyPath(String path) {
         Stack<String> result = new Stack<>();
-        List<String> segments = new ArrayList<>();
         char[] chars = path.toCharArray();
-        for (int i = 0, j = 0; i < chars.length; i++) {
-            while (j < chars.length && chars[j] != '/') {
-                j++;
+        for (int i = 0, j = 0; i < chars.length; ) {
+            while (++j < chars.length && chars[j] != '/' && chars[i] == '/') {
             }
             String s = new String(chars, i, j - i);
+
             //j == char.length || char[j]='/'
+
+                switch (s) {
+                    case "/..":
+                        if (!result.isEmpty()) {
+                            result.pop();
+                        }
+                        break;
+                    case "/":
+                    case "/.":
+                        break;
+                    default:
+                        result.push(s);
+                        break;
+                }
 
 
             i = j;
         }
-        return "";
+        if (result.isEmpty()){
+            return "/";
+        }
+        StringBuilder sb = new StringBuilder();
+        while (!result.isEmpty()) {
+            sb.insert(0, result.pop());
+        }
+        return sb.toString();
     }
 }
