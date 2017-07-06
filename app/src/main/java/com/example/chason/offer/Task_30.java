@@ -10,7 +10,6 @@ import java.util.List;
 
 public class Task_30 {
     public static void main(String[] args) {
-        // TODO: 17-7-4 incomplete
         try {
             List<Integer> show = solution_2(new int[]{4, 5, 6, 1, 3, 4}, 2);
             for (int i : show) {

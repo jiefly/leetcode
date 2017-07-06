@@ -24,7 +24,7 @@ public class StudentAttendanceRecord {
      * @return
      */
     public int checkRecord(int n) {
-        //// TODO: 17-5-16 do it later
+        //TODO: 17-5-16 do it later
         return -1;
     }
     public boolean checkRecord(String s) {

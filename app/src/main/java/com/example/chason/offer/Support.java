@@ -24,6 +24,16 @@ public class Support {
             this.mKey = key;
             this.mNext = next;
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof ListNode){
+                if (mKey == ((ListNode) obj).mKey){
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     public static class BinaryTreeNode {
