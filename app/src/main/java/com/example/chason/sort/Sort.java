@@ -149,6 +149,114 @@ public class Sort {
         }
     }
 
+    private static void rangeCheck(int length, int fromIndex, int toIndex) {
+        if (fromIndex > toIndex) {
+            throw new IllegalArgumentException(
+                    "fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
+        }
+        if (fromIndex < 0) {
+            throw new ArrayIndexOutOfBoundsException(fromIndex);
+        }
+        if (toIndex > length) {
+            throw new ArrayIndexOutOfBoundsException(toIndex);
+        }
+    }
+
+    public static void doublePivotQuickSort(int[] in, int lo, int hi) {
+        if (lo >= hi || hi >= in.length || lo < 0) {
+            return;
+        }
+        rangeCheck(in.length, lo, hi);
+        int l = lo, k, g = hi;
+        if (in[lo] > in[hi]) {
+            exchange(in, lo, hi);
+        }
+        int P1 = in[lo];
+        int P2 = in[hi];
+        while (l <= hi && in[++l] < P1) ;
+        while (g >= lo && in[--g] > P2) ;
+
+        /*
+             * Partitioning:
+             *
+             *   left part           center part                   right part
+             * +--------------------------------------------------------------+
+             * |  < pivot1  |  pivot1 <= && <= pivot2  |    ?    |  > pivot2  |
+             * +--------------------------------------------------------------+
+             *               ^                          ^       ^
+             *               |                          |       |
+             *              less                        k     great
+             *
+             * Invariants:
+             *
+             *              all in (left, less)   < pivot1
+             *    pivot1 <= all in [less, k)     <= pivot2
+             *              all in (great, right) > pivot2
+             *
+             * Pointer k is the first index of ?-part.
+             */
+        outer:
+        for (k = l - 1; ++k <= g; ) {
+            if (in[k] < P1) {
+                exchange(in, k, l);
+                l++;
+            } else if (in[k] > P2) {
+                while (in[g] > P2) {
+                    if (g-- == k) {
+                        break outer;
+                    }
+                }
+                if (in[g] < P1) {
+                    //in[k]<=P1
+                    int tmp = in[k];
+                    in[k] = in[l];
+                    in[l] = in[g];
+                    in[g] = tmp;
+                    l++;
+                    g--;
+                } else {
+                    // P1<=in[k]<=P2
+                    exchange(in, k, g--);
+                }
+            }
+        }
+        exchange(in, lo, l - 1);
+        exchange(in, hi, g + 1);
+        doublePivotQuickSort(in, lo, l - 2);
+        doublePivotQuickSort(in, g + 2, hi);
+        while (l <= g && in[l] == P1) {
+            l++;
+        }
+        while (g >= l && in[g] == P1) {
+            g--;
+        }
+        doublePivotQuickSort(in, l, g);
+    }
+
+    //对于大小为N的数组，三向快速排序需要(2ln2)*NH次比较。
+    //其中H为由主键值出现频率定义的香农信息量。
+    public static void quick3WaySort(int[] in, int lo, int hi) {
+        rangeCheck(in.length, lo, hi);
+        if (lo >= hi) {
+            return;
+        }
+        int index = lo + 1;
+        int v = in[lo];
+        int lt = lo;
+        int gt = hi;
+        while (index <= gt) {
+            if (in[index] > v) {
+                exchange(in, gt--, index);
+            } else if (in[index] < v) {
+                exchange(in, index++, lt++);
+            } else {
+                index++;
+            }
+        }
+        quickSort(in, lo, lt - 1);
+        quickSort(in, gt + 1, hi);
+    }
+
     //时间复杂度：O(NlgN)  平均
     //时间复杂度：O(0.5 * N^2)  最坏：每次切分都正好将切分出一个空数组
     public static void quickSort(int[] in, int lo, int hi) {
@@ -195,7 +303,7 @@ public class Sort {
         if (in == null || in.length < 2) {
             return;
         }
-        int len = in.length-1;
+        int len = in.length - 1;
         for (int i = len / 2; i >= 1; i--) {
             sink(in, i, len);
         }
@@ -207,7 +315,7 @@ public class Sort {
     }
 
     private static void sink(int[] in, int k, int N) {
-        if (in == null ) {
+        if (in == null) {
             throw new IllegalArgumentException();
         }
         while (2 * k <= N) {

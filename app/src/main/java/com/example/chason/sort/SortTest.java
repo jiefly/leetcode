@@ -1,5 +1,6 @@
 package com.example.chason.sort;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Random;
 
 public class SortTest {
     public static void main(String[] args) {
-        int[] in = new int[20];
+        int[] in = new int[18];
         System.out.println("raw data:");
         for (int i = 0; i < in.length; i++) {
             in[i] = new Random().nextInt(100);
@@ -68,7 +69,21 @@ public class SortTest {
         for (int i : tmp1) {
             System.out.print(i + "_");
         }
-        System.out.println("end");
+        System.out.println("");
+        tmp1 = copy(in);
+        System.out.println("quick3way sort:");
+        Sort.quick3WaySort(tmp1,0,tmp1.length-1);
+        for (int i : tmp1) {
+            System.out.print(i + "_");
+        }
+        System.out.println("");
+        tmp1 = copy(in);
+        System.out.println("double pivot quick sort:");
+        Sort.doublePivotQuickSort(tmp1,0,tmp1.length-1);
+        for (int i : tmp1) {
+            System.out.print(i + "_");
+        }
+        System.out.println("\nend");
 
     }
 
