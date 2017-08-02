@@ -12,14 +12,15 @@ import java.util.List;
 
 public class N_Queens {
     public static void main(String[] args) {
-        List<int[]> result ;
-        for (int i = 1; i < 9; i++) {
+        List<List<String>> u = new N_Queens().solveNQueens(4);
+        List<int[]> results ;
+        for (int i = 1; i < 16; i++) {
             long start = System.currentTimeMillis();
-            result = solution(i);
+            results = solution(i);
             System.out.println("=========================================================");
             System.out.println("n="+i+"spend:"+(System.currentTimeMillis() - start) +"ms");
-            System.out.println("size:"+result.size());
-            for (int[] x :result) {
+            System.out.println("size:"+results.size());
+            for (int[] x :results) {
                 for (int j = 0; j < i; j++) {
                     for (int p:x){
                         if (p == j){
@@ -35,6 +36,26 @@ public class N_Queens {
         }
     }
 
+    public List<List<String>> solveNQueens(int n){
+        if (n<1){
+            return new ArrayList<>();
+        }
+        List<List<String>> outer = new ArrayList<>();
+        char[] chars = new char[n];
+        Arrays.fill(chars,'.');
+        for (int[] x :solution(n)) {
+            List<String> strings = new ArrayList<>();
+            for (int j = 0; j < n; j++) {
+                chars[x[j]] = 'Q';
+                strings.add(new String(chars));
+                chars[x[j]] = '.';
+            }
+            outer.add(strings);
+
+        }
+        return outer;
+    }
+
 
     public static List<int[]> solution(int n) {
         List<int[]> result = new ArrayList<>();
@@ -43,9 +64,6 @@ public class N_Queens {
         boolean back = false;
         Arrays.fill(queens, -1);
         while (queens[0] < n) {
-            if (progress > n - 1) {
-                System.out.println("");
-            }
             while (queens[progress] >= n - 1) {
                 if (progress == 0) {
                     return result;
@@ -87,37 +105,6 @@ public class N_Queens {
             }
         }
         return false;
-    }
-public static List<List<String>> solveNQueens(int n) {
-        if (n <= 0) {
-            return new ArrayList<>();
-        }
-        List<List<String>> result = new ArrayList<>();
-        int[] queens = new int[n];
-        int index = 0;
-        int value = 0;
-        boolean back = false;
-        while (!over(queens)) {
-            if (back) {
-                back = false;
-                index--;
-                value = queens[index] + 1;
-            }
-            outer:
-            for (int j = index; j < n; j++) {
-                for (int i = value; i < n; i++) {
-                    if (!conflict(queens, index, i)) {
-                        queens[index++] = i;
-                        break outer;
-                    } else if (i == n - 1) {
-                        back = true;
-                    }
-                }
-            }
-
-
-        }
-        return result;
     }
     private static boolean over(int[] queens) {
         int n = queens.length - 1;
